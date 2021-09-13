@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Hero } from '../hero';
+import { HeroService } from '../hero.service';
 import { HEROES } from '../mock-heroes';
 
 
@@ -11,14 +12,30 @@ import { HEROES } from '../mock-heroes';
 })
 export class HeroesComponent 
   implements OnInit {
-    hero = HEROES
+    heroes : Hero[] = [];
     selectedHero?: Hero ;
-  constructor() { }
+  constructor(private heroService : HeroService) { }
 
   ngOnInit(): void {
-
+    this.getHeroes()
   }
 
+  //original
+  // assigns an array of heroes to the component's heroes property
+  //he assignment occurs synchronously, as if the server could return heroes instantly
+  // getHeroes(): void {
+  //   this.heroes = this.heroService.getHeroes();
+  // }
+
+  // observable
+  //waits for the Observable to emit the array of heroes
+  getHeroes() : void{
+    //The subscribe() method passes the emitted array to the callback, 
+    //which sets the component's heroes property.
+   this.heroService.getHeroes().subscribe(
+     heroes => this.heroes = heroes
+   );
+  }
   onSelect(hero: Hero): void {
     this.selectedHero = hero;
   }
